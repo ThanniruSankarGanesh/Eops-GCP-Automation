@@ -1,0 +1,205 @@
+<div class="project-wrapper" data-project-id="{{ project_id }}">
+    <h2 style="text-align:center; color:#511378;">Project: {{ project_id }}</h2>
+    <nav>
+      <button onclick="showProjectSection('{{ project_id }}', 'vms')">Compute VMs</button>
+      <button onclick="showProjectSection('{{ project_id }}', 'buckets')">Buckets</button>
+      <button onclick="showProjectSection('{{ project_id }}', 'snapshots')">Snapshots</button>
+      <button onclick="showProjectSection('{{ project_id }}', 'orphaned')">Orphaned Disks</button>
+      <button onclick="showProjectSection('{{ project_id }}', 'schedules')">Snapshot Schedules</button>
+      <button onclick="showProjectSection('{{ project_id }}', 'metrics')">CPU/Memory</button>
+    </nav>
+  
+    {% set project = project_id %}
+  
+    <!-- VMs -->
+    <div id="{{ project_id }}-vms" class="section" style="display: block;">
+      <div class="card">
+        <h3>Compute Engine VMs</h3>
+        <table class="display resource-table" id="vmTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Zone</th>
+              <th>Status</th>
+              <th>Machine Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for vm in compute_resources[project].vms %}
+            <tr>
+              <td>{{ vm.name }}</td>
+              <td>{{ vm.zone }}</td>
+              <td>{{ vm.status }}</td>
+              <td>{{ vm.machine_type }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Buckets -->
+    <div id="{{ project_id }}-buckets" class="section" style="display: none;">
+      <div class="card">
+        <h3>Storage Buckets</h3>
+        <table class="display resource-table" id="bucketTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Storage Class</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for bucket in storage_resources[project].buckets %}
+            <tr>
+              <td>{{ bucket.name }}</td>
+              <td>{{ bucket.location }}</td>
+              <td>{{ bucket.storage_class }}</td>
+              <td>{{ bucket.created }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Snapshots -->
+    <div id="{{ project_id }}-snapshots" class="section" style="display: none;">
+      <div class="card">
+        <h3>Snapshots</h3>
+        <table class="display resource-table" id="snapshotTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Size</th>
+              <th>Source Disk</th>
+              <th>Creation Time</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for snap in snapshot_resources[project].snapshots %}
+            <tr>
+              <td>{{ snap.name }}</td>
+              <td>{{ snap.status }}</td>
+              <td>{{ snap.size_gb }}</td>
+              <td>{{ snap.source_disk }}</td>
+              <td>{{ snap.creation_time }}</td>
+              <td>{{ snap.location }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Orphaned Disks -->
+    <div id="{{ project_id }}-orphaned" class="section" style="display: none;">
+      <div class="card">
+        <h3>Orphaned Disks</h3>
+        <table class="display resource-table" id="orphanedTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Zone</th>
+              <th>Size</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Creation Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for disk in orphaned_disks[project].disks %}
+            <tr>
+              <td>{{ disk.name }}</td>
+              <td>{{ disk.zone }}</td>
+              <td>{{ disk.size_gb }}</td>
+              <td>{{ disk.type }}</td>
+              <td>{{ disk.status }}</td>
+              <td>{{ disk.creation_timestamp }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Snapshot Schedules -->
+    <div id="{{ project_id }}-schedules" class="section" style="display: none;">
+      <div class="card"> 
+        <h3>Snapshot Schedules</h3>
+        <table class="display resource-table" id="scheduleTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Region</th>
+              <th>Description</th>
+              <th>Created</th>
+              <th>Schedule Type</th>
+              <th>Retention (days)</th>
+              <th>Labels</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for schedule in snapshot_schedule[project].schedules %}
+            <tr>
+              <td>{{ schedule.name }}</td>
+              <td>{{ schedule.region }}</td>
+              <td>{{ schedule.description }}</td>
+              <td>{{ schedule.creation_timestamp }}</td>
+              <td>{{ schedule.schedule }}</td>
+              <td>{{ schedule.retention_policy }}</td>
+              <td>{{ schedule.labels if schedule.labels else 'None' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Metrics -->
+    <div id="{{ project_id }}-metrics" class="section" style="display: none;">
+      <div class="card">
+        <h3>CPU & Memory Utilization (Last 24 Hours)</h3>
+  
+        <h4>CPU Utilization</h4>
+        <table class="display resource-table" id="cpuTable-{{ project_id }}">
+          <thead>
+            <tr>
+              <th>Instance</th>
+              <th>CPU Utilization (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in utilization_metrics[project].metrics.cpu %}
+            <tr>
+              <td>{{ item.instance_id }}</td>
+              <td>{{ item.cpu_utilization }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  
+        <h4>Memory Utilization</h4>
+        <table class="display resource-table" id="memTable-{{ project_id }}" >
+          <thead>
+            <tr>
+              <th>Instance</th>
+              <th>Memory Used (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in utilization_metrics[project].metrics.memory %}
+            <tr>
+              <td>{{ item.instance_id }}</td>
+              <td>{{ item.memory_percent_used }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
