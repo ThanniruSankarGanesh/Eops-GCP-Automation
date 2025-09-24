@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.jqueryui.min.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <title>Mondelez GCP Cloud Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0; padding: 0;
+            background-color: #ffffff;
+            color: #333;
+        }
+        header {
+            background-color: #511378;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        header img { height: 120px; }
+        h1 { font-size: 26px; margin: 10px 0; }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #7b1fa2;
+            flex-wrap: wrap;
+        }
+        nav button {
+            padding: 10px 16px;
+            background: none;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        nav button:hover {
+            background-color: #9c27b0;
+        }
+        .section {
+            display: none;
+            padding: 20px;
+        }
+        .card {
+            background-color: #f4f1f7;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 700px;
+            text-align: left;
+        }
+        .card-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .card-item:last-child {
+            border-bottom: none;
+        }
+        table.dataTable {
+            width: 100% !important;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table.dataTable th,
+        table.dataTable td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://storage.googleapis.com/gcp-cloud-dashboard/media/mondelez_logo.jpg" alt="Logo">
+        <h1>Mondelez GCP Cloud Dashboard</h1>
+    </header>
+
+    {{ content | safe }}
+
+    <script>
+        function showProjectSection(projectId, section) {
+            const sections = ['vms', 'buckets', 'snapshots', 'orphaned', 'schedules', 'metrics'];
+            sections.forEach(s => {
+                const el = document.getElementById(`${projectId}-${s}`);
+                if (el) el.style.display = (s === section) ? 'block' : 'none';
+            });
+        }
+    
+        window.onload = function () {
+            const wrappers = document.querySelectorAll('.project-wrapper');
+            wrappers.forEach(wrapper => {
+                const projectId = wrapper.getAttribute('data-project-id');
+                if (projectId) {
+                    showProjectSection(projectId, 'vms');
+    
+                    const tableIds = [
+                        `vmTable-${projectId}`,
+                        `bucketTable-${projectId}`,
+                        `snapshotTable-${projectId}`,
+                        `orphanedTable-${projectId}`,
+                        `scheduleTable-${projectId}`,
+                        `cpuTable-${projectId}`,
+                        `memTable-${projectId}`
+                    ];
+    
+                    tableIds.forEach(id => {
+                        const table = document.getElementById(id);
+                        if (table) {
+                            $(table).DataTable({
+                                pageLength: 25,
+                                lengthMenu: [10, 25, 50, 100],
+                                scrollX: true
+                            });
+                        }
+                    });
+                }
+            });
+        };
+    </script>       
+</body>
+</html>
