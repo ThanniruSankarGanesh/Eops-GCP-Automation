@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dashboard-report
+  namespace: dashboard
+spec:
+  schedule: "0 */8 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: dashboard-cronjob-sa
+          containers:
+          - name: dashboard-job
+            image: gcr.io/t-skyline-465506-f8/dashboard-job:v2
+          restartPolicy: OnFailure
+ 
