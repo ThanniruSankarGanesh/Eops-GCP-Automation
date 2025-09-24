@@ -12,26 +12,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2. Set up Python
+    # 2. Set up Python 3.11
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    # 3. Download GCP service account key
-    - name: Download GCP Key
-      uses: actions/download-artifact@v3
-      with:
-        name: gcp-key
-        path: ${{ runner.temp }}
-
-    # 4. Sanitize and set credentials
-    - name: Sanitize and Set GCP Credentials
+    # 3. Decode GCP Key from GitHub Secret
+    - name: Decode GCP Key
       run: |
-        sed '1s/^\xEF\xBB\xBF//' ${{ runner.temp }}/key.json > $HOME/gcp-key.json
+        echo "${{ secrets.GCP_KEY_BASE64 }}" | base64 -d > $HOME/gcp-key.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
-    # 5. Create virtual environment and install dependencies
+    # 4. Create virtual environment and install dependencies
     - name: Install Python Dependencies
       run: |
         python -m venv venv
@@ -40,32 +33,37 @@ jobs:
         pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
         pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
 
-    # 6–10. Run Python scripts
+    # 5. Run GCP VM Inventory Script
     - name: Run GCP VM Inventory Script
       run: |
         source venv/bin/activate
         python VirtualMachine/VirtualMachine.py
 
+    # 6. Run GCP Disk Script
     - name: Run GCP Disk Script
       run: |
         source venv/bin/activate
         python GCP-Disk/disk.py
 
+    # 7. Run GCP Bucket Script
     - name: Run GCP Bucket Script
       run: |
         source venv/bin/activate
         python Bucket/bucket.py
 
+    # 8. Run GCP Snapshot Script
     - name: Run GCP Snapshot Script
       run: |
         source venv/bin/activate
         python Snapshot/snapshot.py
 
+    # 9. Run GCP Dashboard Script
     - name: Run GCP Dashboard Script
       run: |
         source venv/bin/activate
         python Dashboard/main.py
 
+    # 10. Run GCP Health Check Script
     - name: Run GCP Health Check Script
       run: |
         source venv/bin/activate
