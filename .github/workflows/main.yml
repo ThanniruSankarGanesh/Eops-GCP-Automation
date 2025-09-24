@@ -36,22 +36,22 @@ jobs:
     - name: Run GCP VM Inventory Python script
       run: ./venv/bin/python VirtualMachine/VirtualMachine.py
 
-    # # 6. Run GCP Disk Python Script
-    # - name: Run GCP Disk Python Script
-    #   run: ./venv/bin/python GCP-Disk/disk.py
+    # 6. Run GCP Disk Python Script
+    - name: Run GCP Disk Python Script
+      run: ./venv/bin/python GCP-Disk/disk.py
 
-    # # 7. Run GCP Bucket Python Script
-    # - name: Run GCP Bucket Python Script
-    #   run: ./venv/bin/python Bucket/bucket.py
+    # 7. Run GCP Bucket Python Script
+    - name: Run GCP Bucket Python Script
+      run: ./venv/bin/python Bucket/bucket.py
 
-    # # 8. Run GCP Snapshot Python Script
-    # - name: Run GCP Snapshot Python Script
-    #   run: ./venv/bin/python Snapshot/snapshot.py
+    # 8. Run GCP Snapshot Python Script
+    - name: Run GCP Snapshot Python Script
+      run: ./venv/bin/python Snapshot/snapshot.py
 
-    # # 9. Run GCP Dashboard Python Script
-    # - name: Run GCP Dashboard Python Report
-    #   run: ./venv/bin/python Dashboard/main.py
+    # 9. Run GCP Dashboard Python Script
+    - name: Run GCP Dashboard Python Report
+      run: ./venv/bin/python Dashboard/main.py
 
-    # # 10. Run GCP Health Check Python Script
-    # - name: Run GCP Health Check Python Script
-    #   run: ./venv/bin/python healthcheckreport/main_dashboard.py
+    # 10. Run GCP Health Check Python Script
+    - name: Run GCP Health Check Python Script
+      run: ./venv/bin/python healthcheckreport/main_dashboard.py
