@@ -1,0 +1,72 @@
+name: GCP Inventory Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gcp-inventory:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2. Set up Python
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    # 3. Download GCP service account key
+    - name: Download GCP Key
+      uses: actions/download-artifact@v3
+      with:
+        name: gcp-key
+        path: ${{ runner.temp }}
+
+    # 4. Sanitize and set credentials
+    - name: Sanitize and Set GCP Credentials
+      run: |
+        sed '1s/^\xEF\xBB\xBF//' ${{ runner.temp }}/key.json > $HOME/gcp-key.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
+
+    # 5. Create virtual environment and install dependencies
+    - name: Install Python Dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
+        pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
+
+    # 6–10. Run Python scripts
+    - name: Run GCP VM Inventory Script
+      run: |
+        source venv/bin/activate
+        python VirtualMachine/VirtualMachine.py
+
+    - name: Run GCP Disk Script
+      run: |
+        source venv/bin/activate
+        python GCP-Disk/disk.py
+
+    - name: Run GCP Bucket Script
+      run: |
+        source venv/bin/activate
+        python Bucket/bucket.py
+
+    - name: Run GCP Snapshot Script
+      run: |
+        source venv/bin/activate
+        python Snapshot/snapshot.py
+
+    - name: Run GCP Dashboard Script
+      run: |
+        source venv/bin/activate
+        python Dashboard/main.py
+
+    - name: Run GCP Health Check Script
+      run: |
+        source venv/bin/activate
+        python healthcheckreport/main_dashboard.py
