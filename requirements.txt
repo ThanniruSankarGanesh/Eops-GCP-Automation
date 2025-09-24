@@ -1,0 +1,5 @@
+google-cloud-storage
+google-cloud-compute
+google-cloud-monitoring
+google-cloud-bigquery
+jinja2
