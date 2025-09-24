@@ -42,8 +42,8 @@ jobs:
     # 5. Run GCP VM Inventory Script
     - name: Run GCP VM Inventory Script
       run: |
-       source venv/bin/activate
-       python VirtualMachine/VirtualMachine.py
+        source venv/bin/activate
+        python VirtualMachine/VirtualMachine.py
 
 
     # # 6. Run GCP Disk Script
