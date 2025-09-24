@@ -27,23 +27,23 @@ jobs:
     # 4. Create virtual environment and install dependencies
     - name: Install Python Dependencies
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install --upgrade pip
-        pip install google-cloud-compute 
-        pip install google-cloud-storage
-        pip install google-cloud-bigquery 
-        pip install google-cloud-monitoring
-        pip install google-auth 
-        pip install google-auth-oauthlib 
-        pip install google-auth-httplib2 
-        pip install grpcio protobuf
-        pip install Jinja2 
-        pip install google-api-python-client
+         python -m venv venv
+         source venv/bin/activate
+         pip install --upgrade pip
+         pip install google-cloud-compute
+         pip install google-cloud-storage
+         pip install google-cloud-bigquery
+         pip install google-cloud-monitoring
+         pip install google-auth google-auth-oauthlib google-auth-httplib2
+         pip install grpcio protobuf
+         pip install Jinja2
+         pip install google-api-python-client
 
     # 5. Run GCP VM Inventory Script
     - name: Run GCP VM Inventory Script
-      run: python VirtualMachine/VirtualMachine.py
+      run: |
+       source venv/bin/activate
+       python VirtualMachine/VirtualMachine.py
 
 
     # # 6. Run GCP Disk Script
