@@ -27,8 +27,6 @@ jobs:
     # 4. Create virtual environment and install dependencies
     - name: Install Python Dependencies
       run: |
-         python -m venv venv
-         source venv/bin/activate
          pip install --upgrade pip
          pip install google-cloud-compute
          pip install google-cloud-storage
@@ -42,7 +40,6 @@ jobs:
     # 5. Run GCP VM Inventory Script
     - name: Run GCP VM Inventory Script
       run: |
-        source venv/bin/activate
         python VirtualMachine/VirtualMachine.py
 
 
