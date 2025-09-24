@@ -32,26 +32,31 @@ jobs:
         ./venv/bin/pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
         ./venv/bin/pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
 
-    # 5. Run GCP VM Inventory Python script
+    # 5.  Run GCP VM Python Script
     - name: Run GCP VM Inventory Python script
-      run: ./venv/bin/python VirtualMachine/VirtualMachine.py
+      run: |
+        echo "${{ secrets.GCP_SA_JSON }}" > ${{ github.workspace }}/gcp-key.json
+        ./venv/bin/python VirtualMachine/VirtualMachine.py
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
 
-    # 6. Run GCP Disk Python Script
-    - name: Run GCP Disk Python Script
-      run: ./venv/bin/python GCP-Disk/disk.py
 
-    # 7. Run GCP Bucket Python Script
-    - name: Run GCP Bucket Python Script
-      run: ./venv/bin/python Bucket/bucket.py
+    # # 6. Run GCP Disk Python Script
+    # - name: Run GCP Disk Python Script
+    #   run: ./venv/bin/python GCP-Disk/disk.py
 
-    # 8. Run GCP Snapshot Python Script
-    - name: Run GCP Snapshot Python Script
-      run: ./venv/bin/python Snapshot/snapshot.py
+    # # 7. Run GCP Bucket Python Script
+    # - name: Run GCP Bucket Python Script
+    #   run: ./venv/bin/python Bucket/bucket.py
 
-    # 9. Run GCP Dashboard Python Script
-    - name: Run GCP Dashboard Python Report
-      run: ./venv/bin/python Dashboard/main.py
+    # # 8. Run GCP Snapshot Python Script
+    # - name: Run GCP Snapshot Python Script
+    #   run: ./venv/bin/python Snapshot/snapshot.py
 
-    # 10. Run GCP Health Check Python Script
-    - name: Run GCP Health Check Python Script
-      run: ./venv/bin/python healthcheckreport/main_dashboard.py
+    # # 9. Run GCP Dashboard Python Script
+    # - name: Run GCP Dashboard Python Report
+    #   run: ./venv/bin/python Dashboard/main.py
+
+    # # 10. Run GCP Health Check Python Script
+    # - name: Run GCP Health Check Python Script
+    #   run: ./venv/bin/python healthcheckreport/main_dashboard.py
