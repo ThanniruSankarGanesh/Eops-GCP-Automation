@@ -28,9 +28,9 @@ jobs:
     - name: Install Python Dependencies
       run: |
         python -m venv venv
-        ./venv/bin/ pip install --upgrade pip
-        ./venv/bin/ pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
-        ./venv/bin/ pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
+        ./venv/bin/pip install --upgrade pip
+        ./venv/bin/pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
+        ./venv/bin/pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
 
     # 5. Run GCP VM Inventory Python script
     - name: Run GCP VM Inventory Python script
