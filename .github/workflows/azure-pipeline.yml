@@ -1,0 +1,87 @@
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# 1. Set Python version
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.11'
+  displayName: 'Set Python Version'
+
+# 2. Download GCP service account key
+- task: DownloadSecureFile@1
+  name: downloadGCPKey
+  inputs:
+    secureFile: 'key.json'
+  displayName: 'Download GCP Key'
+
+# 3. set credentials
+- script: |
+    sed '1s/^\xEF\xBB\xBF//' $(downloadGCPKey.secureFilePath) > $HOME/gcp-key.json
+    echo "✅ Cleaned GCP key"
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+  displayName: 'Sanitize and Set GCP Credentials'
+
+# 4. Create virtual environment and install dependencies
+- script: |
+    python -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install google-cloud-compute
+    pip install google-cloud-storage
+    pip install google-cloud-bigquery
+    pip install google-cloud-monitoring
+    pip install google-auth google-auth-oauthlib google-auth-httplib2
+    pip install grpcio protobuf
+    pip install Jinja2
+    pip install google-api-python-client
+  displayName: 'Install Python Dependencies'
+
+# 5. Run GCP VM Inventory Python script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python VirtualMachine/VirtualMachine.py
+  displayName: 'Run GCP VM Inventory Python script'
+
+# 6. Run GCP Disk Python Script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python GCP-Disk/disk.py
+  displayName: 'Run GCP Disk Python Script'
+
+
+# 7. Run GCP Bucket Python Script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python Bucket/bucket.py
+  displayName: 'Run GCP Bucket Python Script'
+
+
+# 8. Run GCP Snapshot Python Script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python Snapshot/snapshot.py
+  displayName: 'Run GCP Snapshot Python Script'
+
+
+# 9. Run GCP Dashboard Python Script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python Dashboard/main.py
+  displayName: 'Run GCP Dashboard Python Report'
+
+
+# 10. Run GCP Health Check Python Script
+- script: |
+    source venv/bin/activate
+    export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json
+    python healthcheckreport/main_dashboard.py
+  displayName: 'Run GCP Health Check Python Script'
