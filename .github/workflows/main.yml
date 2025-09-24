@@ -18,19 +18,19 @@ jobs:
       with:
         python-version: '3.11'
 
-    # 3. Decode GCP Key from GitHub Secret
-    - name: Decode GCP Key
+    # 3. Write the raw JSON secret to a file
+    - name: Write GCP credentials to file
       run: |
-        echo "${{ secrets.GCP_KEY_BASE64 }}" | base64 -d > ${{ github.workspace }}/gcp-key.json
+        echo "${{ secrets.GCP_KEY_BASE64 }}" > ${{ github.workspace }}/gcp-key.json
         echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
 
     # 4. Create virtual environment and install dependencies
     - name: Install Python Dependencies
       run: |
         python -m venv venv
-        ./venv/bin/pip install --upgrade pip
-        ./venv/bin/pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
-        ./venv/bin/pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
+        ./venv/bin/ pip install --upgrade pip
+        ./venv/bin/ pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
+        ./venv/bin/ pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
 
     # 5. Run GCP VM Inventory Python script
     - name: Run GCP VM Inventory Python script
