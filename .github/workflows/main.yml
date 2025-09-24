@@ -21,8 +21,8 @@ jobs:
     # 3. Decode GCP Key from GitHub Secret
     - name: Decode GCP Key
       run: |
-        echo "${{ secrets.GCP_KEY_BASE64 }}" | base64 -d > $HOME/gcp-key.json
-        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
+        echo "${{ secrets.GCP_KEY_BASE64 }}" | base64 -d > gcp-key.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
 
     # 4. Install Python Dependencies
     - name: Install Python Dependencies
@@ -35,4 +35,4 @@ jobs:
     - name: Run GCP VM Inventory Script
       run: python VirtualMachine/VirtualMachine.py
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/gcp-key.json
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
