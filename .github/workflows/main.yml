@@ -37,8 +37,7 @@ jobs:
         pip install google-auth 
         pip install google-auth-oauthlib 
         pip install google-auth-httplib2 
-        pip install grpcio 
-        pip install protobuf 
+        pip install grpcio protobuf
         pip install Jinja2 
         pip install google-api-python-client
 
