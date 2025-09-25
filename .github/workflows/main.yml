@@ -1,4 +1,4 @@
-name: GCP Use Case Deployments
+name: GCP Use Case Deployment
 
 on:
   push:
