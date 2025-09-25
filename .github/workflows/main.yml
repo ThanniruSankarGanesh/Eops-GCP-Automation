@@ -7,7 +7,6 @@ jobs:
   run-inventory:
     runs-on: ubuntu-latest
  
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,16 +31,21 @@ jobs:
             protobuf \
             Jinja2 \
             google-api-python-client
+            
       - name: Inject GCP service account credentials to temp file
         run: |
           echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > /tmp/gcp-key.json
+          
       - name: Debug - Show first few lines of credentials
         run: head -n 10 /tmp/gcp-key.json
+        
       - name: Validate JSON format
         run: python -m json.tool < /tmp/gcp-key.json
+        
       - name: Print project ID from credentials
         run: |
           python -c "import json; print('Project ID:', json.load(open('/tmp/gcp-key.json'))['project_id'])"
+          
       - name: Run GCP VM Inventory Python script
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
