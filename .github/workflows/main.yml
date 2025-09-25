@@ -44,8 +44,7 @@ jobs:
 
       - name: Print Content
         run: |
-          cat /tmp/gcp-key.json
-         
+          cat /tmp/gcp-key.json  
       
       - name: Validate JSON format
         run: python -m json.tool < /tmp/gcp-key.json
