@@ -1,4 +1,4 @@
-name: Deploy to GCP
+name: GCP VM Inventory
 
 on:
   push:
@@ -6,21 +6,42 @@ on:
       - main
 
 jobs:
-  deploy:
+  run-inventory:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          project_id: 'eops-gcp-lab'
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          export_default_credentials: true
+          python-version: '3.10'  # Adjust version as needed
 
-      - name: Deploy or run GCP command
+      - name: Create virtual environment and install dependencies
         run: |
-          gcloud auth list
-          # Add your GCP commands here
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install \
+            google-cloud-compute \
+            google-cloud-storage \
+            google-cloud-bigquery \
+            google-cloud-monitoring \
+            google-auth \
+            google-auth-oauthlib \
+            google-auth-httplib2 \
+            grpcio \
+            protobuf \
+            Jinja2 \
+            google-api-python-client
+
+      - name: Inject GCP service account credentials
+        run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
+
+      - name: Run GCP VM Inventory Python script
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
+        run: |
+          source venv/bin/activate
+          python VirtualMachine/VirtualMachine.py
