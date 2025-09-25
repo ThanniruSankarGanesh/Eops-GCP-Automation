@@ -41,8 +41,9 @@ jobs:
           mkdir -p ${{ github.workspace }}
           printf '%s' "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
 
-      - name: Debug 
-        run: head -n 5 ${{ github.workspace }}/gcp-key.json
+      - name: Debug the content
+        run: |
+          cat ${{ github.workspace }}/gcp-key.json
 
 
       - name: Validate JSON format
