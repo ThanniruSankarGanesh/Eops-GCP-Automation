@@ -1,4 +1,5 @@
 name: GCP VM Inventory
+
 on:
   push:
     branches:
@@ -15,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # Adjust version as needed
+          python-version: '3.11'
 
       - name: Create virtual environment and install dependencies
         run: |
@@ -39,6 +40,9 @@ jobs:
         run: |
           printf '%s' "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
 
+      - name: Validate JSON format
+        run: |
+          python -m json.tool < ${{ github.workspace }}/gcp-key.json
 
       - name: Run GCP VM Inventory Python script
         env:
