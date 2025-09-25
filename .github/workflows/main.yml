@@ -38,18 +38,16 @@ jobs:
 
       - name: Inject GCP service account credentials
         run: |
+          mkdir -p ${{ github.workspace }}
           cat <<EOF > ${{ github.workspace }}/gcp-key.json
           ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           EOF
 
-      - name: Debug the content
-        run: |
-          cat ${{ github.workspace }}/gcp-key.json
-
+      - name: Debug the Content of the Creds
+        run: head -n 10 ${{ github.workspace }}/gcp-key.json
 
       - name: Validate JSON format
-        run: |
-          python -m json.tool < ${{ github.workspace }}/gcp-key.json
+        run: python -m json.tool < ${{ github.workspace }}/gcp-key.json
 
       - name: Run GCP VM Inventory Python script
         env:
