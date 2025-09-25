@@ -42,6 +42,11 @@ jobs:
           ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           EOF
 
+      - name: Print Content
+        run: |
+          cat /tmp/gcp-key.json
+         
+      
       - name: Validate JSON format
         run: python -m json.tool < /tmp/gcp-key.json
 
