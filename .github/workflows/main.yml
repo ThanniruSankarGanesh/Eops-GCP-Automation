@@ -1,4 +1,4 @@
-name: GCP VM Inventory
+name: GCP Use Case Deployment
 
 on:
   push:
