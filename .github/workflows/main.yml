@@ -37,7 +37,9 @@ jobs:
             google-api-python-client
 
       - name: Inject GCP service account credentials
-        run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
+        run: |
+          printf '%s' "${{ secrets.GCP_SA_JSON }}" > ${{ github.workspace }}/gcp-key.json
+
 
       - name: Run GCP VM Inventory Python script
         env:
