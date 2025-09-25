@@ -1,5 +1,4 @@
 name: GCP VM Inventory
-
 on:
   push:
     branches:
