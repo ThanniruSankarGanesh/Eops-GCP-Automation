@@ -29,11 +29,6 @@ jobs:
             google-cloud-bigquery \
             google-cloud-monitoring \
             google-auth \
-            google-auth-oauthlib \
-            google-auth-httplib2 \
-            grpcio \
-            protobuf \
-            Jinja2 \
             google-api-python-client
 
       - name: Inject GCP service account credentials to temp file
@@ -41,13 +36,6 @@ jobs:
           cat <<EOF > /tmp/gcp-key.json
           ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           EOF
-
-      - name: Print Content
-        run: |
-          cat /tmp/gcp-key.json  
-      
-      - name: Validate JSON format
-        run: python -m json.tool < /tmp/gcp-key.json
 
       - name: Run GCP VM Inventory Python script
         env:
