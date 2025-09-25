@@ -42,9 +42,12 @@ jobs:
           ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
           EOF
 
+      - name: Validate JSON format
+        run: python -m json.tool < /tmp/gcp-key.json
+
       - name: Run GCP VM Inventory Python script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
+          GOOGLE_APPLICATION_CREDENTIALS: "/tmp/gcp-key.json"
         run: |
           source venv/bin/activate
           python VirtualMachine/VirtualMachine.py
