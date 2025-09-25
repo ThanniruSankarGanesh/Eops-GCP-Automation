@@ -39,6 +39,7 @@ jobs:
       - name: Inject GCP service account credentials to temp file
         run: |
           printf '%s' "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > /tmp/gcp-key.json
+          cat /tmp/gcp-key.json
 
       - name: Validate JSON format
         run: python -m json.tool < /tmp/gcp-key.json
