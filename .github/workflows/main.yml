@@ -1,62 +1,26 @@
-name: GCP Inventory Workflow
+name: Deploy to GCP
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  gcp-inventory:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # 2. Set up Python 3.11
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: 'eops-gcp-lab'
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
 
-    # 3. Write the raw JSON secret to a file
-    - name: Write GCP credentials to file
-      run: |
-        echo "${{ secrets.GCP_KEY_BASE64 }}" > ${{ github.workspace }}/gcp-key.json
-        echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
-
-    # 4. Create virtual environment and install dependencies
-    - name: Install Python Dependencies
-      run: |
-        python -m venv venv
-        ./venv/bin/pip install --upgrade pip
-        ./venv/bin/pip install google-cloud-compute google-cloud-storage google-cloud-bigquery google-cloud-monitoring
-        ./venv/bin/pip install google-auth google-auth-oauthlib google-auth-httplib2 grpcio protobuf Jinja2 google-api-python-client
-
-    # 5.  Run GCP VM Python Script
-    - name: Run GCP VM Inventory Python script
-      run: |
-        echo "${{ secrets.GCP_SA_JSON }}" > ${{ github.workspace }}/gcp-key.json
-        ./venv/bin/python VirtualMachine/VirtualMachine.py
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
-
-
-    # # 6. Run GCP Disk Python Script
-    # - name: Run GCP Disk Python Script
-    #   run: ./venv/bin/python GCP-Disk/disk.py
-
-    # # 7. Run GCP Bucket Python Script
-    # - name: Run GCP Bucket Python Script
-    #   run: ./venv/bin/python Bucket/bucket.py
-
-    # # 8. Run GCP Snapshot Python Script
-    # - name: Run GCP Snapshot Python Script
-    #   run: ./venv/bin/python Snapshot/snapshot.py
-
-    # # 9. Run GCP Dashboard Python Script
-    # - name: Run GCP Dashboard Python Report
-    #   run: ./venv/bin/python Dashboard/main.py
-
-    # # 10. Run GCP Health Check Python Script
-    # - name: Run GCP Health Check Python Script
-    #   run: ./venv/bin/python healthcheckreport/main_dashboard.py
+      - name: Deploy or run GCP command
+        run: |
+          gcloud auth list
+          # Add your GCP commands here
