@@ -38,13 +38,8 @@ jobs:
 
       - name: Inject GCP service account credentials
         run: |
-          mkdir -p ${{ github.workspace }}
-          cat <<EOF > ${{ github.workspace }}/gcp-key.json
-          ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          EOF
+          printf '%s' "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
 
-      - name: Debug the Content of the Creds
-        run: head -n 10 ${{ github.workspace }}/gcp-key.json
 
       - name: Validate JSON format
         run: python -m json.tool < ${{ github.workspace }}/gcp-key.json
