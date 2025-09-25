@@ -39,24 +39,24 @@ jobs:
  
       - name: Inject GCP service account credentials to temp file
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > /tmp/gcp-key.json
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > /Dashboard/key.json
  
       - name: Debug - Show first few lines of credentials
         run: head -n 10 /tmp/gcp-key.json
  
       - name: Validate JSON format
-        run: python -m json.tool < /tmp/gcp-key.json
+        run: python -m json.tool < /Dashboard/key.json
  
       - name: Print project ID from credentials
         run: |
-          python -c "import json; print('Project ID:', json.load(open('/tmp/gcp-key.json'))['project_id'])"
+          python -c "import json; print('Project ID:', json.load(open('/Dashboard/key.json'))['project_id'])"
  
       - name: Run GCP VM Inventory Python script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
+          GOOGLE_APPLICATION_CREDENTIALS: /Dashboard/key.json
         run: |
           source venv/bin/activate
           python VirtualMachine/VirtualMachine.py
  
       - name: Cleanup credentials
-        run: rm /tmp/gcp-key.json
+        run: rm /Dashboard/key.json
