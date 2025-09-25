@@ -36,26 +36,22 @@ jobs:
             Jinja2 \
             google-api-python-client
 
-      - name: Inject GCP service account credentials to temp file
+      - name: Inject GCP service account credentials
         run: |
-          cat <<EOF > /tmp/gcp-key.json
-          ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          EOF
+          mkdir -p ${{ github.workspace }}
+          printf '%s' "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > ${{ github.workspace }}/gcp-key.json
+          
+      - name: print Value
+        run:
+          cat gcp-key.json
 
-      - name: Print Content
-        run: |
-          cat /tmp/gcp-key.json
-         
-      
       - name: Validate JSON format
-        run: python -m json.tool < /tmp/gcp-key.json
+        run: |
+          python -m json.tool < ${{ github.workspace }}/gcp-key.json
 
       - name: Run GCP VM Inventory Python script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: "/tmp/gcp-key.json"
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/gcp-key.json
         run: |
           source venv/bin/activate
           python VirtualMachine/VirtualMachine.py
-
-      - name: Cleanup credentials
-        run: rm /tmp/gcp-key.json
