@@ -8,6 +8,7 @@ on:
 jobs:
   run-inventory:
     runs-on: ubuntu-latest
+
  
     steps:
       - name: Checkout repository
